@@ -1,0 +1,8 @@
+pandas
+numpy
+lightgbm
+scikit-learn
+requests
+beautifulsoup4
+lxml
+joblib
