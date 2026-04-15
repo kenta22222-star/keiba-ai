@@ -35,7 +35,8 @@ jobs:
                   f.write(data)
           print('モデル復元完了')
           "
-　　　- name: ファイル確認
+
+      - name: ファイル確認
         run: |
           ls -la
           echo "---"
