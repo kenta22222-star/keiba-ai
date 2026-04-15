@@ -2,19 +2,22 @@ name: 大井競馬AI予想 毎日自動生成
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # 毎日JST10:00（UTC01:00）に実行
-  workflow_dispatch:       # 手動実行も可能
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   generate:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: リポジトリをチェックアウト
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Pythonをセットアップ
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -43,4 +46,3 @@ jobs:
           git add articles/
           git diff --staged --quiet || git commit -m "自動生成: $(date +'%Y-%m-%d') 大井競馬予想"
           git push
-          
