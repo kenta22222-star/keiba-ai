@@ -35,13 +35,13 @@ jobs:
                   f.write(data)
           print('モデル復元完了')
           "
-- name: ファイル確認
+　　　- name: ファイル確認
         run: |
           ls -la
           echo "---"
           ls -la *.b64 || echo "b64ファイルなし"
           ls -la *.csv || echo "csvファイルなし"
-          
+
       - name: 記事を生成
         run: python3 generate_article_ci.py
 
