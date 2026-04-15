@@ -1,0 +1,46 @@
+name: 大井競馬AI予想 毎日自動生成
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 毎日JST10:00（UTC01:00）に実行
+  workflow_dispatch:       # 手動実行も可能
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Pythonをセットアップ
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: モデルファイルを復元
+        run: |
+          python3 -c "
+          import base64, os
+          for name in ['1着', '2着', '3着']:
+              with open(f'model_{name}.b64', 'r') as f:
+                  data = base64.b64decode(f.read())
+              with open(f'keiba_model_{name}.pkl', 'wb') as f:
+                  f.write(data)
+          print('モデル復元完了')
+          "
+
+      - name: 記事を生成
+        run: python3 generate_article_ci.py
+
+      - name: 生成した記事をコミット
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git add articles/
+          git diff --staged --quiet || git commit -m "自動生成: $(date +'%Y-%m-%d') 大井競馬予想"
+          git push
+          
